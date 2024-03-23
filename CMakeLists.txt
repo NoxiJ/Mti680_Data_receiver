@@ -7,7 +7,11 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 
 link_directories(${CMAKE_SOURCE_DIR}/libs)
 
-add_executable(Mti680_Data_receiver main.cpp)
+add_executable(Mti680_Data_receiver main.cpp
+        MtiDataReader.cpp
+        MtiDataReader.h
+        MtiDataValues.cpp
+        MtiDataValues.h)
 
 target_link_libraries(Mti680_Data_receiver
     ${CMAKE_SOURCE_DIR}/libs/xstypes64.lib

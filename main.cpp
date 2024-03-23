@@ -115,10 +115,8 @@ int main(void)
     };
 
     cout << "Scanning for devices..." << endl;
-//    XsPortInfoArray portInfoArray = XsScanner::scanPorts();
 
     // Find an MTi device
-
     XsPortInfo mtPort(3);
     bool isPort = XsScanner::scanPort(mtPort);
 
@@ -127,14 +125,6 @@ int main(void)
     } else {
         cout << "Port introuvable" << endl;
     }
-//    for (auto const &portInfo : portInfoArray)
-//    {
-//        if (portInfo.deviceId().isMti() || portInfo.deviceId().isMtig())
-//        {
-//            mtPort = portInfo;
-//            break;
-//        }
-//    }
 
     if (mtPort.empty())
         return handleError("No MTi device found. Aborting.");
