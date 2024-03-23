@@ -4,55 +4,6 @@
 
 #include "MtiDataReader.h"
 
-class CallbackHandler : public XsCallback
-{
-public:
-    CallbackHandler(size_t maxBufferSize = 5)
-            : m_maxNumberOfPacketsInBuffer(maxBufferSize)
-            , m_numberOfPacketsInBuffer(0)
-    {
-    }
-
-    virtual ~CallbackHandler() throw()
-    {
-    }
-
-    bool packetAvailable() const
-    {
-        xsens::Lock locky(&m_mutex);
-        return m_numberOfPacketsInBuffer > 0;
-    }
-
-    XsDataPacket getNextPacket()
-    {
-        assert(packetAvailable());
-        xsens::Lock locky(&m_mutex);
-        XsDataPacket oldestPacket(m_packetBuffer.front());
-        m_packetBuffer.pop_front();
-        --m_numberOfPacketsInBuffer;
-        return oldestPacket;
-    }
-
-protected:
-    virtual void onLiveDataAvailable(XsDevice*, const XsDataPacket* packet)
-    {
-        xsens::Lock locky(&m_mutex);
-        assert(packet != nullptr);
-        while (m_numberOfPacketsInBuffer >= m_maxNumberOfPacketsInBuffer)
-            (void)getNextPacket();
-
-        m_packetBuffer.push_back(*packet);
-        ++m_numberOfPacketsInBuffer;
-        assert(m_numberOfPacketsInBuffer <= m_maxNumberOfPacketsInBuffer);
-    }
-private:
-    mutable xsens::Mutex m_mutex;
-
-    size_t m_maxNumberOfPacketsInBuffer;
-    size_t m_numberOfPacketsInBuffer;
-    std::list<XsDataPacket> m_packetBuffer;
-};
-
 /*
  * METHODES PUBLIQUES
  */
@@ -100,6 +51,7 @@ bool MtiDataReader::initialize(bool specificPort) {
             }
         }
     } else {
+        // Par defaut on utlise le port 3 pour l'instant
         _mtPort = initialize_specificPort(3);
         return true;
     }
@@ -140,8 +92,7 @@ bool MtiDataReader::configureDevice() {
     }
 
     // Create and attach callback handler to device
-    CallbackHandler callbackHandler;
-    _device->addCallbackHandler(&callbackHandler);
+    _device->addCallbackHandler(&_callbackHandler);
 
     // Put the device into configuration mode
     std::cout << "Putting device into configuration mode..." << std::endl;
@@ -209,7 +160,31 @@ bool MtiDataReader::stopRecording() {
     return _device->stopRecording();
 }
 
+bool MtiDataReader::closeLogFile() {
+    if (_device == nullptr) {
+        std::cerr << "Device object is not initialized." << std::endl;
+        return false;
+    }
 
+    // Close log file
+    std::cout << "Closing log file..." << std::endl;
+    return _device->closeLogFile();
+}
+
+void MtiDataReader::closePort() {
+    if (!_mtPort.empty()) {
+        std::cout << "Closing port..." << std::endl;
+        _control->closePort(_mtPort.portName().toStdString());
+    }
+}
+
+void MtiDataReader::freeControlObject() {
+    std::cout << "Freeing XsControl object..." << std::endl;
+    if (_control != nullptr) {
+        _control->destruct();
+        _control = nullptr;
+    }
+}
 
 /*
  * METHODES PRIVEES
