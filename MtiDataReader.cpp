@@ -11,8 +11,7 @@
 /**
  * CONSTRUCTEUR : Initialze les instances de bases pour l'utilisation de l'API Xsens
  */
-MtiDataReader::MtiDataReader(int64_t duration) {
-    this->_duration = duration;
+MtiDataReader::MtiDataReader() {
     _control = XsControl::construct();
     assert(control != nullptr);
 
@@ -32,12 +31,24 @@ MtiDataReader::~MtiDataReader() {
 }
 
 /**
+ * GETTER *_control
+ * @return *_control
+ */
+XsControl MtiDataReader::getControl() const {
+    return *_control;
+}
+
+CallbackHandler &MtiDataReader::getCallbackHandler() {
+    return _callbackHandler;
+}
+
+/**
  * Initialisation du port du capteur
  * @param specificPort TRUE si on s'intéresse à un port specifique
  * @return TRUE si le port est bien initialise
  */
 bool MtiDataReader::initialize(bool specificPort) {
-    if (specificPort) {
+    if (!specificPort) {
         std::cout << "Scanning for devices..." << std::endl;
         XsPortInfoArray portInfoArray = XsScanner::scanPorts();
 
@@ -193,6 +204,12 @@ void MtiDataReader::freeControlObject() {
 
 XsPortInfo MtiDataReader::initialize_specificPort(int portNumber) {
     XsPortInfo mtPort(portNumber);
+    bool isPort = XsScanner::scanPort(mtPort);
+    if (isPort) {
+        std::cout << "Port connecte" << std::endl;
+    } else {
+        std::cout << "Port introuvable" << std::endl;
+    }
     std::cout << "Found a device with ID: " << mtPort.deviceId().toString().toStdString()
               << " @ port: " << mtPort.portName().toStdString()
               << ", baudrate: " << mtPort.baudrate() << std::endl;

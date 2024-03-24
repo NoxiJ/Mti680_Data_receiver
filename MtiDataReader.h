@@ -65,7 +65,7 @@ private:
 class MtiDataReader {
 
 public:
-    MtiDataReader(int64_t duration);
+    MtiDataReader();
     ~MtiDataReader();
 
     bool initialize(bool specificPort = false);
@@ -78,6 +78,9 @@ public:
     void closePort();
     void freeControlObject();
 
+    XsControl getControl() const;
+    CallbackHandler &getCallbackHandler();
+
 private:
 
     static XsPortInfo initialize_specificPort(int portNumber);
@@ -88,7 +91,6 @@ private:
     XsDevice *_device = nullptr;
     CallbackHandler _callbackHandler;
 
-    int64_t _duration;
 };
 
 
