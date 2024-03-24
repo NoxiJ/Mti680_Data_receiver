@@ -11,7 +11,8 @@
 /**
  * CONSTRUCTEUR : Initialze les instances de bases pour l'utilisation de l'API Xsens
  */
-MtiDataReader::MtiDataReader() {
+MtiDataReader::MtiDataReader(int64_t duration) {
+    this->_duration = duration;
     _control = XsControl::construct();
     assert(control != nullptr);
 
