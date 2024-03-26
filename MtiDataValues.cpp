@@ -41,3 +41,15 @@ void MtiDataValues::clearGyroscopes() {
 void MtiDataValues::clearMagnitudes() {
     _magnitudes.clear();
 }
+
+std::vector<XsVector> MtiDataValues::getAccelerations() {
+    return _accelerations;
+}
+
+std::vector<XsVector> MtiDataValues::getGyroscopes() {
+    return _gyroscopes;
+}
+
+std::vector<XsVector> MtiDataValues::getMagnitudes() {
+    return _magnitudes;
+}

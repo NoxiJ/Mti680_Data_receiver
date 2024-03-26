@@ -21,6 +21,11 @@ public:
     void clearGyroscopes    ();
     void clearMagnitudes    ();
 
+    std::vector<XsVector> getAccelerations();
+    std::vector<XsVector> getGyroscopes();
+    std::vector<XsVector> getMagnitudes();
+
+
 private:
 
     std::vector<XsVector> _accelerations;
