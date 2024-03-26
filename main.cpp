@@ -22,7 +22,7 @@ int main() {
     MtiDataReader dataReader;
     MtiDataValues values;
 
-    dataReader.initialize(TRUE);
+    dataReader.initialize(FALSE);       // A tester d'abord dans le logiciel Xsens
 
     dataReader.openPort();
     dataReader.configureDevice();
@@ -39,6 +39,8 @@ int main() {
 
             if (packet.containsCalibratedData()) {
 
+                std::cout << "ON RENTRE DANS LE IF(CONTAINS CALIBRATED DATA) !!!" << std::endl;
+
                 // ------------- ACCELERATION -------------- //
                 XsVector acc = packet.calibratedAcceleration();
                 std::cout << "\r"
@@ -52,14 +54,14 @@ int main() {
                 std::cout << " |Gyr X:" << gyr[0]
                           << ", Gyr Y:" << gyr[1]
                           << ", Gyr Z:" << gyr[2];
-                values.addGyroscope(gyr);
+                values.addGyroscope(gyr);       // stockage des donnees
 
                 // ------------- MAGNITUDE -------------- //
                 XsVector mag = packet.calibratedMagneticField();
                 std::cout << " |Mag X:" << mag[0]
                           << ", Mag Y:" << mag[1]
                           << ", Mag Z:" << mag[2];
-                values.addMagnitude(mag);
+                values.addMagnitude(mag);       // stockage des donnees
             }
         }
 
@@ -70,11 +72,6 @@ int main() {
     dataReader.stopRecording();
     dataReader.closePort();
     dataReader.freeControlObject();
-
-    //ECRITURE DANS EXCEL
-    Excel_exporter exporter(values, "Classeur_test");
-    exporter.writeData();
-    exporter.saveFile();
 
     std::cout << "Successful exit." << std::endl;
     std::cout << "Press [ENTER] to continue." << std::endl;
