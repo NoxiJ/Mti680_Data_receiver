@@ -63,8 +63,8 @@ bool MtiDataReader::initialize(bool specificPort) {
             }
         }
     } else {
-        // Par defaut on utlise le port 3 pour l'instant
-        _mtPort = initialize_specificPort(3);
+        // Par defaut on utlise le port 5 pour l'instant
+        _mtPort = initialize_specificPort(5);
         return true;
     }
 
@@ -106,6 +106,7 @@ bool MtiDataReader::configureDevice() {
     // Create and attach callback handler to device
     _device->addCallbackHandler(&_callbackHandler);
 
+
     // Put the device into configuration mode
     std::cout << "Putting device into configuration mode..." << std::endl;
     if (!_device->gotoConfig()) {
@@ -120,10 +121,12 @@ bool MtiDataReader::configureDevice() {
     configArray.push_back(XsOutputConfiguration(XDI_SampleTimeFine, 0));
 
     if (_device->deviceId().isImu()) {
+        std::cout << "on passe dans isImu" << std::endl;
         configArray.push_back(XsOutputConfiguration(XDI_Acceleration, 100));
         configArray.push_back(XsOutputConfiguration(XDI_RateOfTurn, 100));
         configArray.push_back(XsOutputConfiguration(XDI_MagneticField, 100));
     } else if (_device->deviceId().isVru() || _device->deviceId().isAhrs()) {
+        std::cout << "ON passe dans isVru ou isAhrs" << std::endl;
         configArray.push_back(XsOutputConfiguration(XDI_Quaternion, 100));
     } else if (_device->deviceId().isGnss()) {
         configArray.push_back(XsOutputConfiguration(XDI_Quaternion, 100));
@@ -139,6 +142,8 @@ bool MtiDataReader::configureDevice() {
         std::cerr << "Failed to configure MTi device." << std::endl;
         return false;
     }
+
+
 
     // Put the device into measurement mode
     std::cout << "Putting device into measurement mode..." << std::endl;

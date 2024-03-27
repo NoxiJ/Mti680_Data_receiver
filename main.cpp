@@ -33,6 +33,8 @@ int main() {
         if (dataReader.getCallbackHandler().packetAvailable()) {
             std::cout << std::setw(5) << std::fixed << std::setprecision(2);
 
+            std::cout << "ON rentre ici" << std::endl;
+
             // Retrieve a packet
             XsDataPacket packet = dataReader.getCallbackHandler().getNextPacket();
 
@@ -61,6 +63,12 @@ int main() {
                           << ", Mag Y:" << mag[1]
                           << ", Mag Z:" << mag[2];
                 values.addMagnitude(mag);       // stockage des donnees
+            }
+
+            if (packet.containsOrientation()) {
+                XsEuler pos = packet.orientationEuler();
+
+                std::cout << pos.roll() << "\t" << std::endl;
             }
         }
 
