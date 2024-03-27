@@ -13,7 +13,6 @@
 
 #include "MtiDataReader.h"
 #include "MtiDataValues.h"
-#include "Excel_exporter.h"
 
 #define DURATION 2000  // en millisecondes
 
