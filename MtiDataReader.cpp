@@ -106,6 +106,21 @@ bool MtiDataReader::configureDevice() {
     // Create and attach callback handler to device
     _device->addCallbackHandler(&_callbackHandler);
 
+    // ---- TEST : configuration du capteur pour accélération ----- //
+
+    /*
+     * VOIR DOC XsOption pour config correctement le capteur et permettre
+     * la lecture de l'accélération, gyroscope et magnitude
+     */
+    XsOption optionsDuDevice = _device->getOptions();
+    if (_device->areOptionsEnabled(XsOption::XSO_Calibrate)) {
+        std::cout << "calibrated inertial data from raw data and temperature ACTIVEE" << std::endl;
+    } else {
+        _device->setOptions(XSO_Calibrate, XSO_None);   // On active les calibrated data
+    }
+
+    // ------------------------------------------------------------ //
+
 
     // Put the device into configuration mode
     std::cout << "Putting device into configuration mode..." << std::endl;
@@ -122,13 +137,14 @@ bool MtiDataReader::configureDevice() {
 
     if (_device->deviceId().isImu()) {
         std::cout << "on passe dans isImu" << std::endl;
-        configArray.push_back(XsOutputConfiguration(XDI_Acceleration, 100));
-        configArray.push_back(XsOutputConfiguration(XDI_RateOfTurn, 100));
+        configArray.push_back(XsOutputConfiguration(XDI_Acceleration, 200));
+        configArray.push_back(XsOutputConfiguration(XDI_RateOfTurn, 200));
         configArray.push_back(XsOutputConfiguration(XDI_MagneticField, 100));
     } else if (_device->deviceId().isVru() || _device->deviceId().isAhrs()) {
         std::cout << "ON passe dans isVru ou isAhrs" << std::endl;
         configArray.push_back(XsOutputConfiguration(XDI_Quaternion, 100));
     } else if (_device->deviceId().isGnss()) {
+        std::cout << "On passe dans CONFIG GNSS" << std::endl;
         configArray.push_back(XsOutputConfiguration(XDI_Quaternion, 100));
         configArray.push_back(XsOutputConfiguration(XDI_LatLon, 100));
         configArray.push_back(XsOutputConfiguration(XDI_AltitudeEllipsoid, 100));
@@ -142,8 +158,6 @@ bool MtiDataReader::configureDevice() {
         std::cerr << "Failed to configure MTi device." << std::endl;
         return false;
     }
-
-
 
     // Put the device into measurement mode
     std::cout << "Putting device into measurement mode..." << std::endl;
