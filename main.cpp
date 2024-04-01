@@ -14,7 +14,7 @@
 #include "MtiDataReader.h"
 #include "MtiDataValues.h"
 
-#define DURATION 2000  // en millisecondes
+#define DURATION 5000  // en millisecondes
 
 int main() {
 

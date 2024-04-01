@@ -7,7 +7,7 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 
 link_directories(${CMAKE_SOURCE_DIR}/libs)
 
-add_executable(Mti680_Data_receiver main_ancien.cpp
+add_executable(Mti680_Data_receiver exemple_d'utilisation.cpp
         MtiDataReader.cpp
         MtiDataReader.h
         MtiDataValues.cpp
