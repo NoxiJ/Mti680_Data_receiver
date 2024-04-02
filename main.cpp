@@ -21,7 +21,7 @@ int main() {
     MtiDataReader dataReader;
     MtiDataValues values;
 
-    dataReader.initialize(FALSE);       // A tester d'abord dans le logiciel Xsens
+    dataReader.initialize(TRUE);       // A tester d'abord dans le logiciel Xsens
 
     dataReader.openPort();
     dataReader.configureDevice();
@@ -33,14 +33,11 @@ int main() {
         if (dataReader.getCallbackHandler().packetAvailable()) {
             std::cout << std::setw(5) << std::fixed << std::setprecision(2);
 
-            std::cout << "ON rentre ici" << std::endl;
-
             // Retrieve a packet
             XsDataPacket packet = dataReader.getCallbackHandler().getNextPacket();
+            std::cout << packet.packetCounter() << "\t";
 
             if (packet.containsCalibratedData()) {
-
-                std::cout << "ON RENTRE DANS LE IF(CONTAINS CALIBRATED DATA) !!!" << std::endl;
 
                 // ------------- ACCELERATION -------------- //
                 XsVector acc = packet.calibratedAcceleration();
@@ -52,27 +49,28 @@ int main() {
 
                 // ------------- GYROSCOPE -------------- //
                 XsVector gyr = packet.calibratedGyroscopeData();
-                std::cout << " |Gyr X:" << gyr[0]
+                std::cout << " | Gyr X:" << gyr[0]
                           << ", Gyr Y:" << gyr[1]
                           << ", Gyr Z:" << gyr[2];
                 values.addGyroscope(gyr);       // stockage des donnees
 
                 // ------------- MAGNITUDE -------------- //
                 XsVector mag = packet.calibratedMagneticField();
-                std::cout << " |Mag X:" << mag[0]
+                std::cout << " | Mag X:" << mag[0]
                           << ", Mag Y:" << mag[1]
                           << ", Mag Z:" << mag[2];
                 values.addMagnitude(mag);       // stockage des donnees
             }
 
-            if (packet.containsOrientation()) {
-                XsEuler pos = packet.orientationEuler();
-
-                std::cout << pos.roll() << "\t" << std::endl;
+            if (packet.containsPressure()) {
+                XsPressure pressure = packet.pressure();
+                std::cout << " | Pressure :" << pressure.m_pressure;
+                values.addPressure(pressure);
             }
+            std::cout<<std::endl;
         }
 
-        XsTime::msleep(0); // TEMPO
+//        XsTime::msleep(0); // TEMPO
     }
 
     // LIBERATION MEMOIRE
@@ -83,8 +81,6 @@ int main() {
     std::cout << "Successful exit." << std::endl;
     std::cout << "Press [ENTER] to continue." << std::endl;
     std::cin.get();
-
-
 
     return 0;
 }

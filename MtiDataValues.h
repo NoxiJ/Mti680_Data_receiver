@@ -13,24 +13,29 @@ public:
     MtiDataValues();
     ~MtiDataValues();
 
-    void addAcceleration    (XsVector acceleration);
-    void addGyroscope       (XsVector gyroscope);
-    void addMagnitude       (XsVector magnitude);
+    void addAcceleration    (const XsVector& acceleration);
+    void addGyroscope       (const XsVector& gyroscope);
+    void addMagnitude       (const XsVector& magnitude);
+    void addPressure        (const XsPressure& baroPressure);
 
     void clearAccelerations ();
     void clearGyroscopes    ();
     void clearMagnitudes    ();
+    void clearBaroPressure  ();
 
-    std::vector<XsVector> getAccelerations();
-    std::vector<XsVector> getGyroscopes();
-    std::vector<XsVector> getMagnitudes();
-
+    std::vector<XsVector>   getAccelerations();
+    std::vector<XsVector>   getGyroscopes();
+    std::vector<XsVector>   getMagnitudes();
+    std::vector<XsPressure> getBaroPressure();
 
 private:
 
-    std::vector<XsVector> _accelerations;
-    std::vector<XsVector> _gyroscopes;
-    std::vector<XsVector> _magnitudes;
+    std::vector<uint16_t>   _packetCounters;    // 200 Hz
+    std::vector<XsVector>   _accelerations;     // 200 Hz
+    std::vector<XsVector>   _gyroscopes;        // 200 Hz
+    std::vector<XsVector>   _magnitudes;        // 100 Hz
+    std::vector<XsPressure> _baroPressure;      // 100 Hz
+
 };
 
 
