@@ -8,15 +8,20 @@
 
 #include <iostream>
 #include <iomanip>
+#include <csignal>
 #include <list>
 #include <string>
+#include <conio.h>
 
 #include "MtiDataReader.h"
 #include "MtiDataValues.h"
 
 #define DURATION 5000  // en millisecondes
 
-int main() {
+
+volatile std::sig_atomic_t flag_interruption = 0;
+
+int main(int argc, char* argv[]) {
 
     MtiDataReader dataReader;
     MtiDataValues values;
@@ -26,10 +31,13 @@ int main() {
     dataReader.openPort();
     dataReader.configureDevice();
 
+    std::cout << "Configuration terminée" << std::endl;
+    std::cout << "Press [ENTER] to continue." << std::endl;
+    std::cin.get();
+
     dataReader.startRecording();
 
-    int64_t startTime = XsTime::timeStampNow();
-    while (XsTime::timeStampNow() - startTime <= DURATION) {
+    while (flag_interruption == 0) {
         if (dataReader.getCallbackHandler().packetAvailable()) {
             std::cout << std::setw(5) << std::fixed << std::setprecision(2);
 
@@ -68,6 +76,14 @@ int main() {
                 values.addPressure(pressure);
             }
             std::cout<<std::endl;
+        }
+
+        if (_kbhit()) {
+            // Si la touche est "Entrée", sortir de la boucle
+            if (_getch() == '\r') {
+                std::cout << "Interruption détectée. Sortie de la boucle." << std::endl;
+                flag_interruption = 1;
+            }
         }
 
         XsTime::msleep(0); // TEMPO
