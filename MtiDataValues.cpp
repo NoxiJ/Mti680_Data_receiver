@@ -18,16 +18,20 @@ MtiDataValues::~MtiDataValues() {
 
 }
 
-void MtiDataValues::addAcceleration(XsVector acceleration) {
+void MtiDataValues::addAcceleration(const XsVector& acceleration) {
     _accelerations.push_back(acceleration);
 }
 
-void MtiDataValues::addGyroscope(XsVector gyroscope) {
+void MtiDataValues::addGyroscope(const XsVector& gyroscope) {
     _gyroscopes.push_back(gyroscope);
 }
 
-void MtiDataValues::addMagnitude(XsVector magnitude) {
+void MtiDataValues::addMagnitude(const XsVector& magnitude) {
     _magnitudes.push_back(magnitude);
+}
+
+void MtiDataValues::addPressure(const XsPressure& baroPressure) {
+    _baroPressure.push_back(baroPressure);
 }
 
 void MtiDataValues::clearAccelerations() {
@@ -42,6 +46,10 @@ void MtiDataValues::clearMagnitudes() {
     _magnitudes.clear();
 }
 
+void MtiDataValues::clearBaroPressure() {
+    _baroPressure.clear();
+}
+
 std::vector<XsVector> MtiDataValues::getAccelerations() {
     return _accelerations;
 }
@@ -52,4 +60,8 @@ std::vector<XsVector> MtiDataValues::getGyroscopes() {
 
 std::vector<XsVector> MtiDataValues::getMagnitudes() {
     return _magnitudes;
+}
+
+std::vector<XsPressure> MtiDataValues::getBaroPressure() {
+    return _baroPressure;
 }

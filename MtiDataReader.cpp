@@ -63,7 +63,7 @@ bool MtiDataReader::initialize(bool specificPort) {
             }
         }
     } else {
-        // Par defaut on utlise le port 3 pour l'instant
+        // Par defaut on utlise le port 5 pour l'instant
         _mtPort = initialize_specificPort(3);
         return true;
     }
@@ -106,6 +106,22 @@ bool MtiDataReader::configureDevice() {
     // Create and attach callback handler to device
     _device->addCallbackHandler(&_callbackHandler);
 
+    // ---- TEST : configuration du capteur pour accélération ----- //
+
+    /*
+     * VOIR DOC XsOption pour config correctement le capteur et permettre
+     * la lecture de l'accélération, gyroscope et magnitude
+     */
+    XsOption optionsDuDevice = _device->getOptions();
+    if (_device->areOptionsEnabled(XsOption::XSO_Calibrate)) {
+        std::cout << "calibrated inertial data from raw data and temperature ACTIVEE" << std::endl;
+    } else {
+        _device->setOptions(XSO_Calibrate, XSO_None);   // On active les calibrated data
+    }
+
+    // ------------------------------------------------------------ //
+
+
     // Put the device into configuration mode
     std::cout << "Putting device into configuration mode..." << std::endl;
     if (!_device->gotoConfig()) {
@@ -114,22 +130,22 @@ bool MtiDataReader::configureDevice() {
     }
 
     // Configure the device
+    /*
+     * Pour cette partie, se referer au constructeur XsOutputConfiguration
+     * Si le parametre de configuration n'a pas de frequence à configurer, entrer la valeur 0xFFFF
+     */
     std::cout << "Configuring the device..." << std::endl;
     XsOutputConfigurationArray configArray;
-    configArray.push_back(XsOutputConfiguration(XDI_PacketCounter, 0));
-    configArray.push_back(XsOutputConfiguration(XDI_SampleTimeFine, 0));
+    configArray.push_back(XsOutputConfiguration(XDI_PacketCounter, 0xFFFF));
+    configArray.push_back(XsOutputConfiguration(XDI_SampleTimeFine, 0xFFFF));
 
-    if (_device->deviceId().isImu()) {
-        configArray.push_back(XsOutputConfiguration(XDI_Acceleration, 100));
-        configArray.push_back(XsOutputConfiguration(XDI_RateOfTurn, 100));
+    if (_device->deviceId().isGnss()) {
+        configArray.push_back(XsOutputConfiguration(XDI_EulerAngles, 100));
+        configArray.push_back(XsOutputConfiguration(XDI_Acceleration, 200));
+        configArray.push_back(XsOutputConfiguration(XDI_RateOfTurn, 200));
         configArray.push_back(XsOutputConfiguration(XDI_MagneticField, 100));
-    } else if (_device->deviceId().isVru() || _device->deviceId().isAhrs()) {
-        configArray.push_back(XsOutputConfiguration(XDI_Quaternion, 100));
-    } else if (_device->deviceId().isGnss()) {
-        configArray.push_back(XsOutputConfiguration(XDI_Quaternion, 100));
-        configArray.push_back(XsOutputConfiguration(XDI_LatLon, 100));
-        configArray.push_back(XsOutputConfiguration(XDI_AltitudeEllipsoid, 100));
-        configArray.push_back(XsOutputConfiguration(XDI_VelocityXYZ, 100));
+        configArray.push_back(XsOutputConfiguration(XDI_BaroPressure, 100));
+        configArray.push_back(XsOutputConfiguration(XDI_SubFormatFloat, 0xFFFF));
     } else {
         std::cerr << "Unknown device while configuring. Aborting." << std::endl;
         return false;

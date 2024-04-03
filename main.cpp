@@ -13,16 +13,15 @@
 
 #include "MtiDataReader.h"
 #include "MtiDataValues.h"
-#include "Excel_exporter.h"
 
-#define DURATION 2000  // en millisecondes
+#define DURATION 5000  // en millisecondes
 
 int main() {
 
     MtiDataReader dataReader;
     MtiDataValues values;
 
-    dataReader.initialize(TRUE);
+    dataReader.initialize(TRUE);       // A tester d'abord dans le logiciel Xsens
 
     dataReader.openPort();
     dataReader.configureDevice();
@@ -36,6 +35,7 @@ int main() {
 
             // Retrieve a packet
             XsDataPacket packet = dataReader.getCallbackHandler().getNextPacket();
+            std::cout << packet.packetCounter() << "\t";
 
             if (packet.containsCalibratedData()) {
 
@@ -49,21 +49,28 @@ int main() {
 
                 // ------------- GYROSCOPE -------------- //
                 XsVector gyr = packet.calibratedGyroscopeData();
-                std::cout << " |Gyr X:" << gyr[0]
+                std::cout << " | Gyr X:" << gyr[0]
                           << ", Gyr Y:" << gyr[1]
                           << ", Gyr Z:" << gyr[2];
-                values.addGyroscope(gyr);
+                values.addGyroscope(gyr);       // stockage des donnees
 
                 // ------------- MAGNITUDE -------------- //
                 XsVector mag = packet.calibratedMagneticField();
-                std::cout << " |Mag X:" << mag[0]
+                std::cout << " | Mag X:" << mag[0]
                           << ", Mag Y:" << mag[1]
                           << ", Mag Z:" << mag[2];
-                values.addMagnitude(mag);
+                values.addMagnitude(mag);       // stockage des donnees
             }
+
+            if (packet.containsPressure()) {
+                XsPressure pressure = packet.pressure();
+                std::cout << " | Pressure :" << pressure.m_pressure;
+                values.addPressure(pressure);
+            }
+            std::cout<<std::endl;
         }
 
-        XsTime::msleep(0); // TEMPO
+//        XsTime::msleep(0); // TEMPO
     }
 
     // LIBERATION MEMOIRE
@@ -71,16 +78,9 @@ int main() {
     dataReader.closePort();
     dataReader.freeControlObject();
 
-    //ECRITURE DANS EXCEL
-    Excel_exporter exporter(values, "Classeur_test");
-    exporter.writeData();
-    exporter.saveFile();
-
     std::cout << "Successful exit." << std::endl;
     std::cout << "Press [ENTER] to continue." << std::endl;
     std::cin.get();
-
-
 
     return 0;
 }
