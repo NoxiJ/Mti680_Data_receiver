@@ -88,7 +88,11 @@ bool MtiDataReader::openPort() {
 
 /**
  * Configuration du capteur
- * @return FALSE si la configuration echoue
+ * Fonctionnement :
+ *      Lorsque le capteur passe en mode de configuration (goToConfig), il est alors possible d'activer les grandeurs
+ *      que l'on souhaite mesurer en ajoutant des paramètres de configuration avec leur fréquence d'échantillonnage
+ *      à un vecteur d'options.
+ * @return FALSE si la configuration échoue
  */
 bool MtiDataReader::configureDevice() {
     if (_control == nullptr || _mtPort.empty()) {
@@ -136,16 +140,16 @@ bool MtiDataReader::configureDevice() {
      */
     std::cout << "Configuring the device..." << std::endl;
     XsOutputConfigurationArray configArray;
-    configArray.push_back(XsOutputConfiguration(XDI_PacketCounter, 0xFFFF));
-    configArray.push_back(XsOutputConfiguration(XDI_SampleTimeFine, 0xFFFF));
+    configArray.push_back(XsOutputConfiguration(XDI_PacketCounter, 0));
+    configArray.push_back(XsOutputConfiguration(XDI_SampleTimeFine, 0));
 
     if (_device->deviceId().isGnss()) {
+        configArray.push_back(XsOutputConfiguration(XDI_SubFormatFloat, 0xFFFF));
         configArray.push_back(XsOutputConfiguration(XDI_EulerAngles, 100));
         configArray.push_back(XsOutputConfiguration(XDI_Acceleration, 200));
         configArray.push_back(XsOutputConfiguration(XDI_RateOfTurn, 200));
         configArray.push_back(XsOutputConfiguration(XDI_MagneticField, 100));
         configArray.push_back(XsOutputConfiguration(XDI_BaroPressure, 100));
-        configArray.push_back(XsOutputConfiguration(XDI_SubFormatFloat, 0xFFFF));
     } else {
         std::cerr << "Unknown device while configuring. Aborting." << std::endl;
         return false;

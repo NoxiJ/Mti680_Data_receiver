@@ -70,7 +70,7 @@ int main() {
             std::cout<<std::endl;
         }
 
-//        XsTime::msleep(0); // TEMPO
+        XsTime::msleep(0); // TEMPO
     }
 
     // LIBERATION MEMOIRE
