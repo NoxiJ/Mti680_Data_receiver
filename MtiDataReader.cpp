@@ -170,6 +170,17 @@ bool MtiDataReader::configureDevice() {
     return true;
 }
 
+bool MtiDataReader::createLogFile() {
+    std::cout << "Creating Log File ..." << std::endl;
+    std::string fileName = "logfile.mtb";
+    if (_device->createLogFile(fileName) != XRV_OK) {
+        std::cerr << "Failed to create a log file. Aborting" << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
 bool MtiDataReader::startRecording() {
     if (_device == nullptr) {
         std::cerr << "Device object is not initialized." << std::endl;

@@ -16,9 +16,6 @@
 #include "MtiDataReader.h"
 #include "MtiDataValues.h"
 
-#define DURATION 5000  // en millisecondes
-
-
 volatile std::sig_atomic_t flag_interruption = 0;
 
 int main(int argc, char* argv[]) {
@@ -30,8 +27,10 @@ int main(int argc, char* argv[]) {
 
     dataReader.openPort();
     dataReader.configureDevice();
-
     std::cout << "Configuration terminée" << std::endl;
+
+    dataReader.createLogFile();
+
     std::cout << "Press [ENTER] to continue." << std::endl;
     std::cin.get();
 
@@ -81,7 +80,6 @@ int main(int argc, char* argv[]) {
         if (_kbhit()) {
             // Si la touche est "Entrée", sortir de la boucle
             if (_getch() == '\r') {
-                std::cout << "Interruption détectée. Sortie de la boucle." << std::endl;
                 flag_interruption = 1;
             }
         }
@@ -89,10 +87,12 @@ int main(int argc, char* argv[]) {
         XsTime::msleep(0); // TEMPO
     }
 
-    // LIBERATION MEMOIRE
+    // ----- LIBERATION MEMOIRE ------ //
     dataReader.stopRecording();
+    dataReader.closeLogFile();
     dataReader.closePort();
     dataReader.freeControlObject();
+    // ------------------------------- //
 
     std::cout << "Successful exit." << std::endl;
     std::cout << "Press [ENTER] to continue." << std::endl;

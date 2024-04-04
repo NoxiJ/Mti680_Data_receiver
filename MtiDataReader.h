@@ -70,6 +70,7 @@ public:
 
     bool initialize(bool specificPort = false);
     bool configureDevice();
+    bool createLogFile();
     bool openPort();
 
     bool startRecording();
