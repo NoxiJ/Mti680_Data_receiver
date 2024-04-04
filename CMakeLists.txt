@@ -13,6 +13,7 @@ add_executable(Mti680_Data_receiver exemple_d'utilisation.cpp
         MtiDataValues.cpp
         MtiDataValues.h
         main.cpp
+        exemple_parse.cpp
 )
 
 target_link_libraries(Mti680_Data_receiver
