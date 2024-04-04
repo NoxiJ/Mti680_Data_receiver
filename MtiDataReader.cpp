@@ -38,7 +38,7 @@ XsControl MtiDataReader::getControl() const {
     return *_control;
 }
 
-CallbackHandler &MtiDataReader::getCallbackHandler() {
+CallbackHandler_Reader &MtiDataReader::getCallbackHandler() {
     return _callbackHandler;
 }
 

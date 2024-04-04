@@ -94,7 +94,7 @@ int exemple()
     cout << "Device: " << device->productCode().toStdString() << ", with ID: " << device->deviceId().toString() << " opened." << endl;
 
     // Create and attach callback handler to device
-    CallbackHandler callback;
+    CallbackHandler_Reader callback;
     device->addCallbackHandler(&callback);
 
     // Put the device into configuration mode before configuring the device

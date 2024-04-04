@@ -14,7 +14,7 @@
 #include <conio.h>
 
 #include "MtiDataReader.h"
-#include "MtiDataValues.h"
+#include "MtiParser.h"
 
 volatile std::sig_atomic_t flag_interruption = 0;
 
@@ -97,6 +97,15 @@ int main(int argc, char* argv[]) {
     std::cout << "Successful exit." << std::endl;
     std::cout << "Press [ENTER] to continue." << std::endl;
     std::cin.get();
+
+    MtiParser parser;
+    if (!parser.openLogFile()) {
+        return 0;
+    }
+
+    parser.createDeviceInstance();
+    parser.loadLogFile();
+    parser.exportData();
 
     return 0;
 }

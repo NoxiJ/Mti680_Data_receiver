@@ -23,7 +23,7 @@ XsControl MtiParser::getControl() const {
     return *_control;
 }
 
-CallbackHandler &MtiParser::getCallbackHandler() {
+CallbackHandler_Parser &MtiParser::getCallbackHandler() {
     return _callbackHandler;
 }
 
@@ -84,12 +84,14 @@ void MtiParser::exportData() {
 
         XsDataPacket packet = _device->getDataPacketByIndex(i);
 
+        std::cout << "Packet Count : " << packet.packetCounter() << "\r";
+
         if (packet.containsCalibratedData()) {
+
 
             // ------------- ACCELERATION -------------- //
             XsVector acc = packet.calibratedAcceleration();
-            std::cout << "\r"
-                      << "Acc X:" << acc[0]
+            std::cout << "Acc X:" << acc[0]
                       << ", Acc Y:" << acc[1]
                       << ", Acc Z:" << acc[2];
             _dataValues.addAcceleration(acc);    // stockage des donnees

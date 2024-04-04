@@ -14,15 +14,15 @@
 #include <iostream>
 #include <fstream>
 
-class CallbackHandler : public XsCallback
+class CallbackHandler_Parser : public XsCallback
 {
 public:
-    CallbackHandler()
+    CallbackHandler_Parser()
             : m_progress(0)
     {
     }
 
-    virtual ~CallbackHandler() throw()
+    virtual ~CallbackHandler_Parser() throw()
     {
     }
 
@@ -55,13 +55,13 @@ public:
 
 
     XsControl getControl() const;
-    CallbackHandler &getCallbackHandler();
+    CallbackHandler_Parser &getCallbackHandler();
 
 private:
 
     XsControl *_control = nullptr;
     XsDevice *_device = nullptr;
-    CallbackHandler _callbackHandler;
+    CallbackHandler_Parser _callbackHandler;
     MtiDataValues _dataValues;
 };
 
