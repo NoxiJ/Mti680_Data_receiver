@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
     MtiDataReader dataReader;
     MtiDataValues values;
 
-    dataReader.initialize(TRUE);       // A tester d'abord dans le logiciel Xsens
+    dataReader.init(TRUE);       // A tester d'abord dans le logiciel Xsens
 
     dataReader.openPort();
     dataReader.configureDevice();

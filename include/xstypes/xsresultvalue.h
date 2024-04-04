@@ -127,7 +127,7 @@ enum XsResultValue
 	XRV_NOPORTOPEN				= 288,	//!< 288: No serial port opened for reading/writing
 	XRV_NOFILEORPORTOPEN		= 289,	//!< 289: No file or serial port opened for reading/writing
 	XRV_PORTNOTFOUND			= 290,	//!< 290: A required port could not be found
-	XRV_INITPORTFAILED			= 291,	//!< 291: The low-level port handler failed to initialize
+	XRV_INITPORTFAILED			= 291,	//!< 291: The low-level port handler failed to init
 	XRV_CALIBRATIONFAILED		= 292,	//!< 292: A calibration routine failed
 
 	XRV_CONFIGCHECKFAIL			= 293,	//!< 293: A configuration-time check of the device failed

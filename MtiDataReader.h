@@ -68,7 +68,7 @@ public:
     MtiDataReader();
     ~MtiDataReader();
 
-    bool initialize(bool specificPort = false);
+    bool init(bool specificPort = false);
     bool configureDevice();
     bool createLogFile();
     bool openPort();

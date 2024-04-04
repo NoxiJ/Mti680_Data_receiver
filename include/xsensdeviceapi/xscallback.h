@@ -32,7 +32,7 @@
 	\details When programming in C++, simply overload the callback that you want to use and supply
 	your XsCallbackPlainC-overloaded class to one of the setCallback functions
 
-	When programming in C, create an XsCallbackPlainC structure and initialize each function pointer to
+	When programming in C, create an XsCallbackPlainC structure and init each function pointer to
 	the right function to call. The supplied first parameter is the address of the XsCallbackPlainC
 	object that you supplied to the setCallback function. If you do not wish to receive a specific
 	callback in C, set the function pointer to 0.

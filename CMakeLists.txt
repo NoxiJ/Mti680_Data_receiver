@@ -13,6 +13,9 @@ add_executable(Mti680_Data_receiver exemple_lecture.cpp
         MtiDataValues.cpp
         MtiDataValues.h
         main.cpp
+        MtiParser.cpp
+        MtiParser.h
+        MtiParser.h
 )
 
 target_link_libraries(Mti680_Data_receiver

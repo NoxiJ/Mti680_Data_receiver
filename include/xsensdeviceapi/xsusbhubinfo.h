@@ -60,7 +60,7 @@ struct XsUsbHubInfo
 #ifdef __cplusplus
 	/*! \brief Default constructor
 
-		\param hubid an optional hub identifier to initialize with
+		\param hubid an optional hub identifier to init with
 		\sa XsUsbHubInfo_construct
 	*/
 	explicit XsUsbHubInfo(XsHubIdentifier hubid = 0)

@@ -47,7 +47,7 @@ CallbackHandler &MtiDataReader::getCallbackHandler() {
  * @param specificPort TRUE si on s'intéresse à un port specifique
  * @return TRUE si le port est bien initialise
  */
-bool MtiDataReader::initialize(bool specificPort) {
+bool MtiDataReader::init(bool specificPort) {
     if (!specificPort) {
         std::cout << "Scanning for devices..." << std::endl;
         XsPortInfoArray portInfoArray = XsScanner::scanPorts();
@@ -116,7 +116,6 @@ bool MtiDataReader::configureDevice() {
      * VOIR DOC XsOption pour config correctement le capteur et permettre
      * la lecture de l'accélération, gyroscope et magnitude
      */
-    XsOption optionsDuDevice = _device->getOptions();
     if (_device->areOptionsEnabled(XsOption::XSO_Calibrate)) {
         std::cout << "calibrated inertial data from raw data and temperature ACTIVEE" << std::endl;
     } else {
