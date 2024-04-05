@@ -13,16 +13,16 @@
 #include <list>
 #include <string>
 
-class CallbackHandler : public XsCallback
+class CallbackHandler_Reader : public XsCallback
 {
 public:
-    CallbackHandler(size_t maxBufferSize = 5)
+    CallbackHandler_Reader(size_t maxBufferSize = 5)
             : m_maxNumberOfPacketsInBuffer(maxBufferSize)
             , m_numberOfPacketsInBuffer(0)
     {
     }
 
-    virtual ~CallbackHandler() throw()
+    virtual ~CallbackHandler_Reader() throw()
     {
     }
 
@@ -68,8 +68,9 @@ public:
     MtiDataReader();
     ~MtiDataReader();
 
-    bool initialize(bool specificPort = false);
+    bool init(bool specificPort = false);
     bool configureDevice();
+    bool createLogFile();
     bool openPort();
 
     bool startRecording();
@@ -79,7 +80,7 @@ public:
     void freeControlObject();
 
     XsControl getControl() const;
-    CallbackHandler &getCallbackHandler();
+    CallbackHandler_Reader &getCallbackHandler();
 
 private:
 
@@ -89,7 +90,7 @@ private:
     XsControl *_control = nullptr;
     XsPortInfo _mtPort;
     XsDevice *_device = nullptr;
-    CallbackHandler _callbackHandler;
+    CallbackHandler_Reader _callbackHandler;
 
 };
 

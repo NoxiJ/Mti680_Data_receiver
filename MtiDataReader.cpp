@@ -38,7 +38,7 @@ XsControl MtiDataReader::getControl() const {
     return *_control;
 }
 
-CallbackHandler &MtiDataReader::getCallbackHandler() {
+CallbackHandler_Reader &MtiDataReader::getCallbackHandler() {
     return _callbackHandler;
 }
 
@@ -47,7 +47,7 @@ CallbackHandler &MtiDataReader::getCallbackHandler() {
  * @param specificPort TRUE si on s'intéresse à un port specifique
  * @return TRUE si le port est bien initialise
  */
-bool MtiDataReader::initialize(bool specificPort) {
+bool MtiDataReader::init(bool specificPort) {
     if (!specificPort) {
         std::cout << "Scanning for devices..." << std::endl;
         XsPortInfoArray portInfoArray = XsScanner::scanPorts();
@@ -88,7 +88,11 @@ bool MtiDataReader::openPort() {
 
 /**
  * Configuration du capteur
- * @return FALSE si la configuration echoue
+ * Fonctionnement :
+ *      Lorsque le capteur passe en mode de configuration (goToConfig), il est alors possible d'activer les grandeurs
+ *      que l'on souhaite mesurer en ajoutant des paramètres de configuration avec leur fréquence d'échantillonnage
+ *      à un vecteur d'options.
+ * @return FALSE si la configuration échoue
  */
 bool MtiDataReader::configureDevice() {
     if (_control == nullptr || _mtPort.empty()) {
@@ -112,7 +116,6 @@ bool MtiDataReader::configureDevice() {
      * VOIR DOC XsOption pour config correctement le capteur et permettre
      * la lecture de l'accélération, gyroscope et magnitude
      */
-    XsOption optionsDuDevice = _device->getOptions();
     if (_device->areOptionsEnabled(XsOption::XSO_Calibrate)) {
         std::cout << "calibrated inertial data from raw data and temperature ACTIVEE" << std::endl;
     } else {
@@ -136,16 +139,16 @@ bool MtiDataReader::configureDevice() {
      */
     std::cout << "Configuring the device..." << std::endl;
     XsOutputConfigurationArray configArray;
-    configArray.push_back(XsOutputConfiguration(XDI_PacketCounter, 0xFFFF));
-    configArray.push_back(XsOutputConfiguration(XDI_SampleTimeFine, 0xFFFF));
+    configArray.push_back(XsOutputConfiguration(XDI_PacketCounter, 0));
+    configArray.push_back(XsOutputConfiguration(XDI_SampleTimeFine, 0));
 
     if (_device->deviceId().isGnss()) {
+        configArray.push_back(XsOutputConfiguration(XDI_SubFormatFloat, 0xFFFF));
         configArray.push_back(XsOutputConfiguration(XDI_EulerAngles, 100));
         configArray.push_back(XsOutputConfiguration(XDI_Acceleration, 200));
         configArray.push_back(XsOutputConfiguration(XDI_RateOfTurn, 200));
         configArray.push_back(XsOutputConfiguration(XDI_MagneticField, 100));
         configArray.push_back(XsOutputConfiguration(XDI_BaroPressure, 100));
-        configArray.push_back(XsOutputConfiguration(XDI_SubFormatFloat, 0xFFFF));
     } else {
         std::cerr << "Unknown device while configuring. Aborting." << std::endl;
         return false;
@@ -160,6 +163,17 @@ bool MtiDataReader::configureDevice() {
     std::cout << "Putting device into measurement mode..." << std::endl;
     if (!_device->gotoMeasurement()) {
         std::cerr << "Failed to put device into measurement mode." << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+bool MtiDataReader::createLogFile() {
+    std::cout << "Creating Log File ..." << std::endl;
+    std::string fileName = "logfile.mtb";
+    if (_device->createLogFile(fileName) != XRV_OK) {
+        std::cerr << "Failed to create a log file. Aborting" << std::endl;
         return false;
     }
 

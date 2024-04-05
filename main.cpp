@@ -8,28 +8,35 @@
 
 #include <iostream>
 #include <iomanip>
+#include <csignal>
 #include <list>
 #include <string>
+#include <conio.h>
 
 #include "MtiDataReader.h"
-#include "MtiDataValues.h"
+#include "MtiParser.h"
 
-#define DURATION 5000  // en millisecondes
+volatile std::sig_atomic_t flag_interruption = 0;
 
-int main() {
+int main(int argc, char* argv[]) {
 
     MtiDataReader dataReader;
     MtiDataValues values;
 
-    dataReader.initialize(TRUE);       // A tester d'abord dans le logiciel Xsens
+    dataReader.init(TRUE);       // A tester d'abord dans le logiciel Xsens
 
     dataReader.openPort();
     dataReader.configureDevice();
+    std::cout << "Configuration terminée" << std::endl;
+
+    dataReader.createLogFile();
+
+    std::cout << "Press [ENTER] to continue." << std::endl;
+    std::cin.get();
 
     dataReader.startRecording();
 
-    int64_t startTime = XsTime::timeStampNow();
-    while (XsTime::timeStampNow() - startTime <= DURATION) {
+    while (flag_interruption == 0) {
         if (dataReader.getCallbackHandler().packetAvailable()) {
             std::cout << std::setw(5) << std::fixed << std::setprecision(2);
 
@@ -70,17 +77,35 @@ int main() {
             std::cout<<std::endl;
         }
 
-//        XsTime::msleep(0); // TEMPO
+        if (_kbhit()) {
+            // Si la touche est "Entrée", sortir de la boucle
+            if (_getch() == '\r') {
+                flag_interruption = 1;
+            }
+        }
+
+        XsTime::msleep(0); // TEMPO
     }
 
-    // LIBERATION MEMOIRE
+    // ----- LIBERATION MEMOIRE ------ //
     dataReader.stopRecording();
+    dataReader.closeLogFile();
     dataReader.closePort();
     dataReader.freeControlObject();
+    // ------------------------------- //
 
     std::cout << "Successful exit." << std::endl;
     std::cout << "Press [ENTER] to continue." << std::endl;
     std::cin.get();
+
+    MtiParser parser;
+    if (!parser.openLogFile()) {
+        return 0;
+    }
+
+    parser.createDeviceInstance();
+    parser.loadLogFile();
+    parser.exportData();
 
     return 0;
 }
