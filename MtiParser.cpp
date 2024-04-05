@@ -27,6 +27,10 @@ CallbackHandler_Parser &MtiParser::getCallbackHandler() {
     return _callbackHandler;
 }
 
+MtiDataValues MtiParser::getValues() {
+    return _dataValues;
+}
+
 /*
  * METHODES PUBLIQUES
  */
@@ -85,6 +89,7 @@ void MtiParser::exportData() {
         XsDataPacket packet = _device->getDataPacketByIndex(i);
 
         std::cout << "Packet Count : " << packet.packetCounter() << "\r";
+        _dataValues.addPacketCounters(packet.packetCounter());
 
         if (packet.containsCalibratedData()) {
 

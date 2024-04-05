@@ -52,7 +52,7 @@ public:
     void loadLogFile();
     void exportData();
 
-
+    MtiDataValues getValues();
 
     XsControl getControl() const;
     CallbackHandler_Parser &getCallbackHandler();
