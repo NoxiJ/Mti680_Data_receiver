@@ -47,29 +47,26 @@ CallbackHandler_Reader &MtiDataReader::getCallbackHandler() {
  * @param specificPort TRUE si on s'intéresse à un port specifique
  * @return TRUE si le port est bien initialise
  */
-bool MtiDataReader::init(bool specificPort) {
-    if (!specificPort) {
-        std::cout << "Scanning for devices..." << std::endl;
-        XsPortInfoArray portInfoArray = XsScanner::scanPorts();
+void MtiDataReader::init() {
+    bool isSpecificPort = true;
+    std::cout << "Scanning for devices..." << std::endl;
+    XsPortInfoArray portInfoArray = XsScanner::scanPorts();
 
-        // Find an MTi device
-        for (auto const &portInfo: portInfoArray) {
-            if (portInfo.deviceId().isMti() || portInfo.deviceId().isMtig()) {
-                _mtPort = portInfo;
-                std::cout << "Found a device with ID: " << _mtPort.deviceId().toString().toStdString()
-                          << " @ port: " << _mtPort.portName().toStdString()
-                          << ", baudrate: " << _mtPort.baudrate() << std::endl;
-                return true;
-            }
+    // Find an MTi device
+    for (auto const &portInfo: portInfoArray) {
+        if (portInfo.deviceId().isMti() || portInfo.deviceId().isMtig()) {
+            _mtPort = portInfo;
+            std::cout << "Found a device with ID: " << _mtPort.deviceId().toString().toStdString()
+                      << " @ port: " << _mtPort.portName().toStdString()
+                      << ", baudrate: " << _mtPort.baudrate() << std::endl;
+            isSpecificPort = false;
+            break;
         }
-    } else {
-        // Par defaut on utlise le port 3 pour l'instant
-        _mtPort = initialize_specificPort(3);
-        return true;
     }
-
-    std::cerr << "No MTi device found. Aborting." << std::endl;
-    return false;
+    if (isSpecificPort) {
+        // Si scanPorts ne fonctionne pas, rentrer le port specifique du capteur
+        _mtPort = initialize_specificPort(3);
+    }
 }
 
 /**
@@ -110,20 +107,11 @@ bool MtiDataReader::configureDevice() {
     // Create and attach callback handler to device
     _device->addCallbackHandler(&_callbackHandler);
 
-    // ---- TEST : configuration du capteur pour accélération ----- //
-
-    /*
-     * VOIR DOC XsOption pour config correctement le capteur et permettre
-     * la lecture de l'accélération, gyroscope et magnitude
-     */
     if (_device->areOptionsEnabled(XsOption::XSO_Calibrate)) {
         std::cout << "calibrated inertial data from raw data and temperature ACTIVEE" << std::endl;
     } else {
         _device->setOptions(XSO_Calibrate, XSO_None);   // On active les calibrated data
     }
-
-    // ------------------------------------------------------------ //
-
 
     // Put the device into configuration mode
     std::cout << "Putting device into configuration mode..." << std::endl;
@@ -140,14 +128,14 @@ bool MtiDataReader::configureDevice() {
     std::cout << "Configuring the device..." << std::endl;
     XsOutputConfigurationArray configArray;
 
-    configArray.push_back(XsOutputConfiguration(XDI_PacketCounter, 0xFFFF));
-    configArray.push_back(XsOutputConfiguration(XDI_SubFormatDouble, 0xFFFF));
+    configArray.push_back(XsOutputConfiguration(XDI_PacketCounter, 0xFFFF));    // Compteur des paquets
+    configArray.push_back(XsOutputConfiguration(XDI_SubFormatDouble, 0xFFFF));  // Format de mesure en double
 
     if (_device->deviceId().isGnss()) {
-        configArray.push_back(XsOutputConfiguration(XDI_MagneticField, 100));
-        configArray.push_back(XsOutputConfiguration(XDI_BaroPressure, 100));
-        configArray.push_back(XsOutputConfiguration(XDI_Acceleration, 200));
-        configArray.push_back(XsOutputConfiguration(XDI_RateOfTurn, 200));
+        configArray.push_back(XsOutputConfiguration(XDI_MagneticField, 100));   // Champ magnetique (100 Hz)
+        configArray.push_back(XsOutputConfiguration(XDI_BaroPressure, 100));    // Pression atmospherique (100 Hz)
+        configArray.push_back(XsOutputConfiguration(XDI_Acceleration, 200));    // Acceleration (200 Hz)
+        configArray.push_back(XsOutputConfiguration(XDI_RateOfTurn, 200));      // Tx de rot    (200 Hz)
 
     }
 
@@ -159,6 +147,12 @@ bool MtiDataReader::configureDevice() {
     return true;
 }
 
+/**
+ * Creation du fichier LOG :
+ * Fonctionnement :
+ *      Cree un fichier "logfile.mtb" a l'emplacement de l'execution
+ * @return TRUE si la creation du fichier a reussi
+ */
 bool MtiDataReader::createLogFile() {
     std::cout << "Creating Log File ..." << std::endl;
     std::string fileName = "logfile.mtb";
@@ -170,6 +164,12 @@ bool MtiDataReader::createLogFile() {
     return true;
 }
 
+/**
+ * Demarrage de l'acquisition de donnees
+ * Fonctionnement :
+ *      Passe le capteur en mode mesure puis demarre l'aquisition des donnees
+ * @return TRUE si l'aquisition a correctement demarre
+ */
 bool MtiDataReader::startRecording() {
     if (_device == nullptr) {
         std::cerr << "Device object is not initialized." << std::endl;
@@ -188,6 +188,12 @@ bool MtiDataReader::startRecording() {
     return _device->startRecording();
 }
 
+/**
+ * Arret de l'aquisition des donnees
+ * Fonctionnement :
+ *      Stop l'aquisition des donnees
+ * @return TRUE si l'acquisition des donnees s'est bien arrete
+ */
 bool MtiDataReader::stopRecording() {
     if (_device == nullptr) {
         std::cerr << "Device object is not initialized." << std::endl;
@@ -199,6 +205,12 @@ bool MtiDataReader::stopRecording() {
     return _device->stopRecording();
 }
 
+/**
+ * Fermeture du fichier LOG
+ * Fonctionnement :
+ *      Sauvegarde puis ferme le fichier de LOG
+ * @return TRUE si la fermeture a reussi
+ */
 bool MtiDataReader::closeLogFile() {
     if (_device == nullptr) {
         std::cerr << "Device object is not initialized." << std::endl;
@@ -210,6 +222,9 @@ bool MtiDataReader::closeLogFile() {
     return _device->closeLogFile();
 }
 
+/**
+ * Fermeture du port precedemment ouvert
+ */
 void MtiDataReader::closePort() {
     if (!_mtPort.empty()) {
         std::cout << "Closing port..." << std::endl;
@@ -217,6 +232,9 @@ void MtiDataReader::closePort() {
     }
 }
 
+/**
+ * Liberation de la memoire
+ */
 void MtiDataReader::freeControlObject() {
     std::cout << "Freeing XsControl object..." << std::endl;
     if (_control != nullptr) {
@@ -229,6 +247,11 @@ void MtiDataReader::freeControlObject() {
  * METHODES PRIVEES
  */
 
+/**
+ * Permet d'ouvrir un port specifique dans le cas ou scanPorts() ne retourne rien
+ * @param portNumber numero du port a ouvrir
+ * @return L'objet XsPortInfo contenant les donnees du port ouvert
+ */
 XsPortInfo MtiDataReader::initialize_specificPort(int portNumber) {
     XsPortInfo mtPort(portNumber);
     bool isPort = XsScanner::scanPort(mtPort);

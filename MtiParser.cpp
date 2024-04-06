@@ -4,11 +4,17 @@
 
 #include "MtiParser.h"
 
+/**
+ * CONSTRUCTEUR :
+ */
 MtiParser::MtiParser() {
     _control = XsControl::construct();
     assert(_control != nullptr);
 }
 
+/**
+ * DESTRUCTEUR :
+ */
 MtiParser::~MtiParser() {
     if (_control != nullptr) {
         _control->destruct();
@@ -34,6 +40,13 @@ MtiDataValues MtiParser::getValues() {
 /*
  * METHODES PUBLIQUES
  */
+
+/**
+ * Ouverture du fichier de LOG
+ * Fonctionnement :
+ *      Ouvre le fichier de LOG precedemment cree "logfile.mtb"
+ * @return TRUE
+ */
 bool MtiParser::openLogFile() {
     std::cout << "Opening log file..." << std::endl;
     std::string logFileName = "logfile.mtb";
@@ -44,6 +57,12 @@ bool MtiParser::openLogFile() {
     return true;
 }
 
+/**
+ * Creation d'une instance DeviceId
+ * Fonctionnement :
+ *      Recupere les informations du device dans le fichier de LOG et ajoute à l'objet XsDevice les informations
+ *      correspondantes.
+ */
 void MtiParser::createDeviceInstance() {
     XsDeviceIdArray deviceIdArray = _control->mainDeviceIds();
     XsDeviceId mtDevice;
@@ -64,6 +83,12 @@ void MtiParser::createDeviceInstance() {
         << " found in file." << std::endl;
 }
 
+/**
+ * Chargement des donnees du fichier de LOG
+ * Fonctionnemnet :
+ *      Ajoute a _device un callbackHandler. Selectionne les bonne options pour stocker les donnees.
+ *      Renseigne sur l'avancement du chargement
+ */
 void MtiParser::loadLogFile() {
     // On ajoute le callBack handler
     _device->addCallbackHandler(&_callbackHandler);
@@ -81,10 +106,15 @@ void MtiParser::loadLogFile() {
     std::cout << "File is fully loaded ..." << std::endl;
 }
 
+/**
+ * Exporte les donnees
+ * Fonctionnement :
+ *      Exporte les donnees si elles sont presentes dans chaque paquet.
+ *      Elles sont stockees dans l'objet _dataValues de la classe MtiDataValues
+ */
 void MtiParser::exportData() {
     // On recupere le nombre total de samples
     XsSize packetCount = _device->getDataPacketCount();
-    std::cout << "LET HIM COOK " << packetCount << std::endl;
     for (XsSize i = 0; i < packetCount; i++) {
 
         XsDataPacket packet = _device->getDataPacketByIndex(i);

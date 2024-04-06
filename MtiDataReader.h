@@ -1,6 +1,17 @@
-//
-// Created by louis on 23/03/2024.
-//
+/**
+ * Classe MtiDataReader
+ * @author Louis Jeauffroy
+ * @date 23/03/2024
+ * Description :
+ *      Classe contenant les attributs et méthodes permettant de réaliser l'acquisition des mesures du capteur.
+ *      Elle permet d'acquérir aux fréquences d'échantillonage :
+ *          Les 3 composantes de l'accélération     (200 Hz)
+ *          Les 3 composantes du taux de rotation   (200 Hz)
+ *          Les 3 composantes du champ magnétique   (100 Hz)
+ *          La Pression atmosphérique en Pascal     (100 Hz)
+ *
+ *      Ces données sont alors stockées dans un fichier LOG sauvegardé à l'emplacement de l'exécutable.
+ */
 
 #ifndef MTI680_DATA_RECEIVER_MTIDATAREADER_H
 #define MTI680_DATA_RECEIVER_MTIDATAREADER_H
@@ -68,7 +79,7 @@ public:
     MtiDataReader();
     ~MtiDataReader();
 
-    bool init(bool specificPort = false);
+    void init();
     bool configureDevice();
     bool createLogFile();
     bool openPort();

@@ -7,37 +7,56 @@
 /**
  * CONSTRUCTEUR
  */
-MtiDataValues::MtiDataValues() {
-
-}
+MtiDataValues::MtiDataValues() {}
 
 /**
  * DESCTRUCTEUR
  */
-MtiDataValues::~MtiDataValues() {
+MtiDataValues::~MtiDataValues() {}
 
-}
-
+/**
+ * Ajoute une valeur a la liste de packet counter
+ * @param counter
+ */
 void MtiDataValues::addPacketCounters(uint16_t counter) {
     _packetCounters.push_back(counter);
 }
 
+/**
+ * Ajoute des composantes d'acceleration a la liste
+ * @param acceleration
+ */
 void MtiDataValues::addAcceleration(const XsVector& acceleration) {
     _accelerations.push_back(acceleration);
 }
 
+/**
+ * Ajoute des composantes de taux de rotation a la liste
+ * @param gyroscope
+ */
 void MtiDataValues::addGyroscope(const XsVector& gyroscope) {
     _gyroscopes.push_back(gyroscope);
 }
 
+/**
+ * Ajoute des composantes de champ magnetique a la liste
+ * @param magnitude
+ */
 void MtiDataValues::addMagnitude(const XsVector& magnitude) {
     _magnitudes.push_back(magnitude);
 }
 
+/**
+ * Ajoute une valeur de pression a la liste
+ * @param baroPressure
+ */
 void MtiDataValues::addPressure(const double& baroPressure) {
     _baroPressure.push_back(baroPressure);
 }
 
+/*
+ * CLEARERS
+ */
 void MtiDataValues::clearAccelerations() {
     _accelerations.clear();
 }
@@ -54,6 +73,9 @@ void MtiDataValues::clearBaroPressure() {
     _baroPressure.clear();
 }
 
+/*
+ * GETTERS
+ */
 std::vector<XsVector> MtiDataValues::getAccelerations() {
     return _accelerations;
 }
@@ -70,11 +92,18 @@ std::vector<double> MtiDataValues::getBaroPressure() {
     return _baroPressure;
 }
 
+/**
+ * Creation d'un fichier de sortie Excel
+ * @param fileName nom du fichier de sortie
+ */
 void MtiDataValues::createExcelOutputFile(const char *fileName) {
     _workbook = workbook_new(fileName);
     _worksheet = workbook_add_worksheet(_workbook, "raw_data");
 }
 
+/**
+ * Ecriture des titres des donnees sur la spreasheet Excel
+ */
 void MtiDataValues::writeHeaders() {
     static const char* const headerNames[] = {"Packet Counter",
                                               "Acc_X",
@@ -93,6 +122,9 @@ void MtiDataValues::writeHeaders() {
     }
 }
 
+/**
+ * Ecriture des donnees dans la spreadsheet Excel
+ */
 void MtiDataValues::writeData() {
     for (int i = 0; i < _accelerations.size(); i++) {
         worksheet_write_number(_worksheet, i + 1, 0, _packetCounters[i], nullptr);
@@ -112,6 +144,9 @@ void MtiDataValues::writeData() {
     }
 }
 
+/**
+ * Fermeture du fichier Excel
+ */
 void MtiDataValues::closeWorkbook() {
     std::cout << "fermeture" << std::endl;
     workbook_close(_workbook);
