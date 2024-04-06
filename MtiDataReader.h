@@ -94,5 +94,4 @@ private:
 
 };
 
-
 #endif //MTI680_DATA_RECEIVER_MTIDATAREADER_H

@@ -18,6 +18,10 @@ MtiDataValues::~MtiDataValues() {
 
 }
 
+void MtiDataValues::addPacketCounters(uint16_t counter) {
+    _packetCounters.push_back(counter);
+}
+
 void MtiDataValues::addAcceleration(const XsVector& acceleration) {
     _accelerations.push_back(acceleration);
 }
@@ -30,7 +34,7 @@ void MtiDataValues::addMagnitude(const XsVector& magnitude) {
     _magnitudes.push_back(magnitude);
 }
 
-void MtiDataValues::addPressure(const XsPressure& baroPressure) {
+void MtiDataValues::addPressure(const double& baroPressure) {
     _baroPressure.push_back(baroPressure);
 }
 
@@ -62,6 +66,53 @@ std::vector<XsVector> MtiDataValues::getMagnitudes() {
     return _magnitudes;
 }
 
-std::vector<XsPressure> MtiDataValues::getBaroPressure() {
+std::vector<double> MtiDataValues::getBaroPressure() {
     return _baroPressure;
+}
+
+void MtiDataValues::createExcelOutputFile(const char *fileName) {
+    _workbook = workbook_new(fileName);
+    _worksheet = workbook_add_worksheet(_workbook, "raw_data");
+}
+
+void MtiDataValues::writeHeaders() {
+    static const char* const headerNames[] = {"Packet Counter",
+                                              "Acc_X",
+                                              "Acc_Y",
+                                              "Acc_Z",
+                                              "Gyro_X",
+                                              "Gyro_Y",
+                                              "Gyro_Z",
+                                              "Mag_X",
+                                              "Mag_Y",
+                                              "Mag_Z",
+                                              "Pressure"};
+
+    for (int i = 0; i <= 10; i++) {
+        worksheet_write_string(_worksheet, 0, i, headerNames[i], nullptr);
+    }
+}
+
+void MtiDataValues::writeData() {
+    for (int i = 0; i < _accelerations.size(); i++) {
+        worksheet_write_number(_worksheet, i + 1, 0, _packetCounters[i], nullptr);
+        worksheet_write_number(_worksheet, i + 1, 1, _accelerations[i][0], nullptr);
+        worksheet_write_number(_worksheet, i + 1, 2, _accelerations[i][1], nullptr);
+        worksheet_write_number(_worksheet, i + 1, 3, _accelerations[i][2], nullptr);
+        worksheet_write_number(_worksheet, i + 1, 4, _gyroscopes[i][0], nullptr);
+        worksheet_write_number(_worksheet, i + 1, 5, _gyroscopes[i][1], nullptr);
+        worksheet_write_number(_worksheet, i + 1, 6, _gyroscopes[i][2], nullptr);
+    }
+
+    for (int i = 0; i < _baroPressure.size(); i++) {
+        worksheet_write_number(_worksheet, (i + 1) * 2, 7, _magnitudes[i][0], nullptr);
+        worksheet_write_number(_worksheet, (i + 1) * 2, 8, _magnitudes[i][1], nullptr);
+        worksheet_write_number(_worksheet, (i + 1) * 2, 9, _magnitudes[i][2], nullptr);
+        worksheet_write_number(_worksheet, (i + 1) * 2, 10, _baroPressure[i], nullptr);
+    }
+}
+
+void MtiDataValues::closeWorkbook() {
+    std::cout << "fermeture" << std::endl;
+    workbook_close(_workbook);
 }

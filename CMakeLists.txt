@@ -21,4 +21,5 @@ add_executable(Mti680_Data_receiver exemple_lecture.cpp
 target_link_libraries(Mti680_Data_receiver
     ${CMAKE_SOURCE_DIR}/libs/xstypes64.lib
     ${CMAKE_SOURCE_DIR}/libs/xsensdeviceapi64.lib
+    ${CMAKE_SOURCE_DIR}/libs/xlsxwriter.lib
 )
