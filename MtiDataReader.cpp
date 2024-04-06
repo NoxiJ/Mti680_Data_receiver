@@ -63,7 +63,7 @@ bool MtiDataReader::init(bool specificPort) {
             }
         }
     } else {
-        // Par defaut on utlise le port 5 pour l'instant
+        // Par defaut on utlise le port 3 pour l'instant
         _mtPort = initialize_specificPort(3);
         return true;
     }
@@ -139,7 +139,7 @@ bool MtiDataReader::configureDevice() {
      */
     std::cout << "Configuring the device..." << std::endl;
     XsOutputConfigurationArray configArray;
-    configArray.push_back(XsOutputConfiguration(XDI_PacketCounter, 0));
+    configArray.push_back(XsOutputConfiguration(XDI_PacketCounter, 200));
     configArray.push_back(XsOutputConfiguration(XDI_SampleTimeFine, 0));
 
     if (_device->deviceId().isGnss()) {
@@ -156,13 +156,6 @@ bool MtiDataReader::configureDevice() {
 
     if (!_device->setOutputConfiguration(configArray)) {
         std::cerr << "Failed to configure MTi device." << std::endl;
-        return false;
-    }
-
-    // Put the device into measurement mode
-    std::cout << "Putting device into measurement mode..." << std::endl;
-    if (!_device->gotoMeasurement()) {
-        std::cerr << "Failed to put device into measurement mode." << std::endl;
         return false;
     }
 
@@ -183,6 +176,13 @@ bool MtiDataReader::createLogFile() {
 bool MtiDataReader::startRecording() {
     if (_device == nullptr) {
         std::cerr << "Device object is not initialized." << std::endl;
+        return false;
+    }
+
+    // Put the device into measurement mode
+    std::cout << "Putting device into measurement mode..." << std::endl;
+    if (!_device->gotoMeasurement()) {
+        std::cerr << "Failed to put device into measurement mode." << std::endl;
         return false;
     }
 
