@@ -16,11 +16,11 @@ public:
     MtiDataValues();
     ~MtiDataValues();
 
-    void addPacketCounters  (const uint16_t counter);
+    void addPacketCounters  (uint16_t counter);
     void addAcceleration    (const XsVector& acceleration);
     void addGyroscope       (const XsVector& gyroscope);
     void addMagnitude       (const XsVector& magnitude);
-    void addPressure        (const XsPressure& baroPressure);
+    void addPressure        (const double& baroPressure);
 
     void clearAccelerations ();
     void clearGyroscopes    ();
@@ -30,7 +30,7 @@ public:
     std::vector<XsVector>   getAccelerations();
     std::vector<XsVector>   getGyroscopes();
     std::vector<XsVector>   getMagnitudes();
-    std::vector<XsPressure> getBaroPressure();
+    std::vector<double> getBaroPressure();
 
     void createExcelOutputFile  (const char *fileName);
     void writeHeaders           ();
@@ -43,7 +43,7 @@ private:
     std::vector<XsVector>   _accelerations;     // 200 Hz
     std::vector<XsVector>   _gyroscopes;        // 200 Hz
     std::vector<XsVector>   _magnitudes;        // 100 Hz
-    std::vector<XsPressure> _baroPressure;      // 100 Hz
+    std::vector<double> _baroPressure;      // 100 Hz
 
     lxw_workbook *_workbook;
     lxw_worksheet *_worksheet;

@@ -36,46 +36,46 @@ int main(int argc, char* argv[]) {
 
     while (flag_interruption == 0) {
 
-        /*
-         * Partie pour s'assurer de la bonne réception des données
-         */
-        if (dataReader.getCallbackHandler().packetAvailable()) {
-            std::cout << std::setw(5) << std::fixed << std::setprecision(2);
-
-            // Retrieve a packet
-            XsDataPacket packet = dataReader.getCallbackHandler().getNextPacket();
-            std::cout << packet.packetCounter() << "\t";
-
-            if (packet.containsCalibratedData()) {
-
-                // ------------- ACCELERATION -------------- //
-                XsVector acc = packet.calibratedAcceleration();
-                std::cout << "\r"
-                     << "Acc X:" << acc[0]
-                     << ", Acc Y:" << acc[1]
-                     << ", Acc Z:" << acc[2];
-
-                // ------------- GYROSCOPE -------------- //
-                XsVector gyr = packet.calibratedGyroscopeData();
-                std::cout << " | Gyr X:" << gyr[0]
-                          << ", Gyr Y:" << gyr[1]
-                          << ", Gyr Z:" << gyr[2];
-
-                // ------------- MAGNITUDE -------------- //
-                XsVector mag = packet.calibratedMagneticField();
-                std::cout << " | Mag X:" << mag[0]
-                          << ", Mag Y:" << mag[1]
-                          << ", Mag Z:" << mag[2];
-            }
-
-            if (packet.containsPressure()) {
-                XsPressure pressure = packet.pressure();
-                std::cout << " | Pressure :" << pressure.m_pressure;
-            }
-            std::cout<<std::endl;
-        }
-
-        // --------------------------------------------------------------- //
+//        /*
+//         * Partie pour s'assurer de la bonne réception des données
+//         */
+//        if (dataReader.getCallbackHandler().packetAvailable()) {
+//            std::cout << std::setw(5) << std::fixed << std::setprecision(2);
+//
+//            // Retrieve a packet
+//            XsDataPacket packet = dataReader.getCallbackHandler().getNextPacket();
+//            std::cout << packet.packetCounter() << "\t";
+//
+//            if (packet.containsCalibratedData()) {
+//
+//                // ------------- ACCELERATION -------------- //
+//                XsVector acc = packet.calibratedAcceleration();
+//                std::cout << "\r"
+//                     << "Acc X:" << acc[0]
+//                     << ", Acc Y:" << acc[1]
+//                     << ", Acc Z:" << acc[2];
+//
+//                // ------------- GYROSCOPE -------------- //
+//                XsVector gyr = packet.calibratedGyroscopeData();
+//                std::cout << " | Gyr X:" << gyr[0]
+//                          << ", Gyr Y:" << gyr[1]
+//                          << ", Gyr Z:" << gyr[2];
+//
+//                // ------------- MAGNITUDE -------------- //
+//                XsVector mag = packet.calibratedMagneticField();
+//                std::cout << " | Mag X:" << mag[0]
+//                          << ", Mag Y:" << mag[1]
+//                          << ", Mag Z:" << mag[2];
+//            }
+//
+//            if (packet.containsPressure()) {
+//                XsPressure pressure = packet.pressure();
+//                std::cout << " | Pressure :" << pressure.m_pressure;
+//            }
+//            std::cout<<std::endl;
+//        }
+//
+//        // --------------------------------------------------------------- //
 
         if (_kbhit()) {
             // Si la touche est "Entrée", sortir de la boucle

@@ -84,46 +84,32 @@ void MtiParser::loadLogFile() {
 void MtiParser::exportData() {
     // On recupere le nombre total de samples
     XsSize packetCount = _device->getDataPacketCount();
-    std::cout << packetCount << std::endl;
+    std::cout << "LET HIM COOK " << packetCount << std::endl;
     for (XsSize i = 0; i < packetCount; i++) {
 
         XsDataPacket packet = _device->getDataPacketByIndex(i);
 
-        std::cout << "Packet Count : " << packet.packetCounter() << "\r";
         _dataValues.addPacketCounters(packet.packetCounter());
 
-        if (packet.containsCalibratedData()) {
+        // ------------- ACCELERATION -------------- //
+        XsVector acc = packet.calibratedAcceleration();
+        _dataValues.addAcceleration(acc);    // stockage des donnees
 
-            // ------------- ACCELERATION -------------- //
-            XsVector acc = packet.calibratedAcceleration();
-//            std::cout << "Acc X:" << acc[0]
-//                      << ", Acc Y:" << acc[1]
-//                      << ", Acc Z:" << acc[2];
-            _dataValues.addAcceleration(acc);    // stockage des donnees
+        // ------------- GYROSCOPE -------------- //
+        XsVector gyr = packet.calibratedGyroscopeData();
+        _dataValues.addGyroscope(gyr);       // stockage des donnees
 
-            // ------------- GYROSCOPE -------------- //
-            XsVector gyr = packet.calibratedGyroscopeData();
-//            std::cout << " | Gyr X:" << gyr[0]
-//                      << ", Gyr Y:" << gyr[1]
-//                      << ", Gyr Z:" << gyr[2];
-            _dataValues.addGyroscope(gyr);       // stockage des donnees
-
-        }
 
         if (packet.containsCalibratedMagneticField()) {
             // ------------- MAGNITUDE -------------- //
             XsVector mag = packet.calibratedMagneticField();
-    //            std::cout << " | Mag X:" << mag[0]
-    //                      << ", Mag Y:" << mag[1]
-    //                      << ", Mag Z:" << mag[2];
+
             _dataValues.addMagnitude(mag);       // stockage des donnees
         }
 
         if (packet.containsPressure()) {
             XsPressure pressure = packet.pressure();
-//            std::cout << " | Pressure :" << pressure.m_pressure;
-            _dataValues.addPressure(pressure);
+            _dataValues.addPressure(pressure.m_pressure);
         }
-        std::cout<<std::endl;
     }
 }

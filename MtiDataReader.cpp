@@ -139,19 +139,16 @@ bool MtiDataReader::configureDevice() {
      */
     std::cout << "Configuring the device..." << std::endl;
     XsOutputConfigurationArray configArray;
-    configArray.push_back(XsOutputConfiguration(XDI_PacketCounter, 200));
-    configArray.push_back(XsOutputConfiguration(XDI_SampleTimeFine, 0));
+
+    configArray.push_back(XsOutputConfiguration(XDI_PacketCounter, 0xFFFF));
+    configArray.push_back(XsOutputConfiguration(XDI_SubFormatDouble, 0xFFFF));
 
     if (_device->deviceId().isGnss()) {
-        configArray.push_back(XsOutputConfiguration(XDI_SubFormatFloat, 0xFFFF));
-        configArray.push_back(XsOutputConfiguration(XDI_EulerAngles, 100));
-        configArray.push_back(XsOutputConfiguration(XDI_Acceleration, 200));
-        configArray.push_back(XsOutputConfiguration(XDI_RateOfTurn, 200));
         configArray.push_back(XsOutputConfiguration(XDI_MagneticField, 100));
         configArray.push_back(XsOutputConfiguration(XDI_BaroPressure, 100));
-    } else {
-        std::cerr << "Unknown device while configuring. Aborting." << std::endl;
-        return false;
+        configArray.push_back(XsOutputConfiguration(XDI_Acceleration, 200));
+        configArray.push_back(XsOutputConfiguration(XDI_RateOfTurn, 200));
+
     }
 
     if (!_device->setOutputConfiguration(configArray)) {
