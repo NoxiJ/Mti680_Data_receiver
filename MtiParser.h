@@ -1,6 +1,13 @@
-//
-// Created by louis on 04/04/2024.
-//
+/**
+ * Classe MtiDataReader
+ * @author Louis Jeauffroy
+ * @date 04/04/2024
+ * Description :
+ *      Classe permettant d'aller récupérer les données utiles au projet via l'extraction de celle-ci dans le fichier
+ *      LOG créé après l'enregistrement des mesures du capteur Mti-680G. Elle utilise pour cela les méthodes de
+ *      Xsens Device API.
+ *      Les données lues sont ensuite stockées dans les attributs d'une instance de la classe MtiDataValues
+ */
 
 #ifndef MTI680_DATA_RECEIVER_MTIPARSER_H
 #define MTI680_DATA_RECEIVER_MTIPARSER_H

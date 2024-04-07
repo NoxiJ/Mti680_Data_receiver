@@ -1,6 +1,12 @@
-//
-// Created by louis on 23/03/2024.
-//
+/**
+ * Classe MtiDataValues
+ * @author Louis Jeauffroy
+ * @date 23/03/2024
+ * Description :
+ *      Classe contenant les vecteurs liste contenant les données récupérées dans le fichier LOG .mtb.
+ *      Elle permet également l'extraction de celles-ci vers une feuille d'un fichier Excel au format .xlsx ceci
+ *      via l'utilisation de la bibliothèque C "xlsxWriter".
+ */
 
 #ifndef MTI680_DATA_RECEIVER_MTIDATAVALUES_H
 #define MTI680_DATA_RECEIVER_MTIDATAVALUES_H

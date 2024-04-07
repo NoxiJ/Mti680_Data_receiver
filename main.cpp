@@ -27,7 +27,7 @@ volatile std::sig_atomic_t flag_interruption = 0;
  *      2e Partie :     Instanciation des objets pour parse le fichier Log
  *                      Parse du fichier de Log
  *                      Création d'un fichier de sortie Excel
- *                      Écrtiture des données dans ce fichier
+ *                      Écriture des données dans ce fichier
  *                      Fermeture/Sauvegarde du fichier de sortie
  */
 int main(int argc, char* argv[]) {
