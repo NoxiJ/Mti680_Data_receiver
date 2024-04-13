@@ -27,3 +27,6 @@ L'outil est pour l'instant disponible sous systèmes Windows 64 bits et compilé
 
 ### Installation Rapide
 
+Pour une utilisation rapide sans compilation, un exécutable est présent dans le répertoire "Setup".
+Il permet d'installer directement le logiciel sous windows via un installeur.
+
