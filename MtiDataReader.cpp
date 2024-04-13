@@ -31,13 +31,17 @@ MtiDataReader::~MtiDataReader() {
 }
 
 /**
- * GETTER *_control
+ * GETTER
  * @return *_control
  */
 XsControl MtiDataReader::getControl() const {
     return *_control;
 }
 
+/**
+ * GETTER
+ * @return _callbackHandler
+ */
 CallbackHandler_Reader &MtiDataReader::getCallbackHandler() {
     return _callbackHandler;
 }
@@ -48,7 +52,6 @@ CallbackHandler_Reader &MtiDataReader::getCallbackHandler() {
  * @return TRUE si le port est bien initialise
  */
 void MtiDataReader::init() {
-    bool isSpecificPort = true;
     std::cout << "Scanning for devices..." << std::endl;
     XsPortInfoArray portInfoArray = XsScanner::scanPorts();
 
@@ -59,14 +62,11 @@ void MtiDataReader::init() {
             std::cout << "Found a device with ID: " << _mtPort.deviceId().toString().toStdString()
                       << " @ port: " << _mtPort.portName().toStdString()
                       << ", baudrate: " << _mtPort.baudrate() << std::endl;
-            isSpecificPort = false;
-            break;
+            return;
         }
     }
-    if (isSpecificPort) {
-        // Si scanPorts ne fonctionne pas, rentrer le port specifique du capteur
-        _mtPort = initialize_specificPort(3);
-    }
+    // Si scanPorts ne fonctionne pas, rentrer le port specifique du capteur
+    _mtPort = initialize_specificPort(3);
 }
 
 /**

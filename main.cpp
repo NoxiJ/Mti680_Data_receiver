@@ -33,7 +33,7 @@ volatile std::sig_atomic_t flag_interruption = 0;
 int main(int argc, char* argv[]) {
 
     MtiDataReader dataReader;
-    dataReader.init();        // A tester d'abord dans le logiciel Xsens
+    dataReader.init();
 
     dataReader.openPort();                  // Ouverture du port
     dataReader.configureDevice();           // Configuration de l'objet device

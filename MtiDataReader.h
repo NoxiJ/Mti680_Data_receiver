@@ -97,7 +97,6 @@ private:
 
     static XsPortInfo initialize_specificPort(int portNumber);
 
-
     XsControl *_control = nullptr;
     XsPortInfo _mtPort;
     XsDevice *_device = nullptr;
