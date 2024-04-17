@@ -28,9 +28,14 @@ L'outil est pour l'instant disponible sous systèmes Windows 64 bits et Linux AR
 #### Options de compilation
 
 * Pour Windows 64 bits : compilation via CMake et compilateur MSVC 2019 minimum (sources XDA --> dossier "include")
-* Pour Linux ARM :       compilation via MakeFile et compilateur GCC 5.4.0 minimum
+* Pour Linux ARM :       compilation via MakeFile et compilateur GCC 5.4.0 minimum (sources XDA --> dossier "xspublic")
 
 Ces deux options requièrent C++ version 11 au minimum.
+
+#### Version Linux
+
+Pour utiliser l'outil sur OS Linux, suivre les consignes de compilation correspondantes.
+ATTENTION : L'outil est conçu pour générer un document au format Excel xlsx en sortie. Il faudra donc modifier le source "MtiDataValues.cpp" pour l'exporter vers un format utilisable par Linux (i.e. csv).
 
 ### Installation Rapide
 
