@@ -25,7 +25,7 @@ L'outil a été développé pour l'utilisation du modèle Mti-680G mais peut êt
 
 L'outil est pour l'instant disponible sous systèmes Windows 64 bits et Linux ARM
 
-## Options de compilation
+#### Options de compilation
 
 * Pour Windows 64 bits : compilation via CMake et compilateur MSVC 2019 minimum (sources XDA --> dossier "include")
 * Pour Linux ARM :       compilation via MakeFile et compilateur GCC 5.4.0 minimum
